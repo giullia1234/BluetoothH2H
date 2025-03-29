@@ -1,22 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Bluetooth Interface</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conectividade Bluetooth</title>
 </head>
 <body>
-    <h1>Conectar ao Dispositivo Bluetooth</h1>
-    <button id="connectButton">Conectar</button>
-    <p id="status">Status: Desconectado</p>
+    <h1>Bem-vindo ao projeto Interface Human to Human</h1>
+    <p>Esta página permite a conexão com dispositivos Bluetooth próximos.</p>
+    <button id="connect">Conectar ao dispositivo Bluetooth</button>
+    <p id="status"></p>
+
     <script>
-        document.getElementById('connectButton').addEventListener('click', async () => {
+        document.getElementById('connect').addEventListener('click', async () => {
             try {
+                // Solicita um dispositivo Bluetooth
                 const device = await navigator.bluetooth.requestDevice({
-                    filters: [{ services: ['battery_service'] }]
+                    acceptAllDevices: true, // Aceita todos os dispositivos
+                    optionalServices: ['battery_service'] // Serviços que você gostaria de acessar
                 });
+
+                // Exibe o nome do dispositivo, se ele tiver
+                document.getElementById('status').textContent = `Conectado a: ${device.name}`;
+                
+                // Se desejar, conecte-se e use serviços daqui
                 const server = await device.gatt.connect();
-                document.getElementById('status').textContent = "Status: Conectado";
+                console.log('Conectado ao servidor GATT', server);
+
             } catch (error) {
-                document.getElementById('status').textContent = "Status: Erro ao conectar";
+                console.error('Erro ao conectar:', error);
+                document.getElementById('status').textContent = `Erro: ${error.message}`;
             }
         });
     </script>
