@@ -4,10 +4,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bluetooth Interface</title>
+    <title>Conectividade Bluetooth</title>
 </head>
 <body>
-    <h1>Bem-vindo ao BluetoothH2H!</h1>
-    <p>Este é o site para o seu projeto de interface Bluetooth.</p>
+    <h1>Bem-vindo ao projeto Interface Human to Human</h1>
+    <p>Esta página permite a conexão com dispositivos Bluetooth próximos.</p>
+    <button id="connect">Conectar ao dispositivo Bluetooth</button>
+    <p id="status"></p>
+
+    <script>
+        document.getElementById('connect').addEventListener('click', async () => {
+            try {
+                // Solicita um dispositivo Bluetooth
+                const device = await navigator.bluetooth.requestDevice({
+                    acceptAllDevices: true, // Aceita todos os dispositivos
+                    optionalServices: ['battery_service'] // Serviços que você gostaria de acessar
+                });
+
+                // Exibe o nome do dispositivo, se ele tiver
+                document.getElementById('status').textContent = `Conectado a: ${device.name}`;
+                
+                // Se desejar, conecte-se e use serviços daqui
+                const server = await device.gatt.connect();
+                console.log('Conectado ao servidor GATT', server);
+
+            } catch (error) {
+                console.error('Erro ao conectar:', error);
+                document.getElementById('status').textContent = `Erro: ${error.message}`;
+            }
+        });
+    </script>
 </body>
 </html>
